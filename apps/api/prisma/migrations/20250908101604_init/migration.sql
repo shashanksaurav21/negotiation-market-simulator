@@ -1,0 +1,30 @@
+-- CreateTable
+CREATE TABLE "Scenario" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "params" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "Run" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "scenarioId" INTEGER NOT NULL,
+    "seed" INTEGER NOT NULL,
+    "metrics" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Run_scenarioId_fkey" FOREIGN KEY ("scenarioId") REFERENCES "Scenario" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "RunRound" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "runId" INTEGER NOT NULL,
+    "roundNum" INTEGER NOT NULL,
+    "deals" INTEGER NOT NULL,
+    "deadlocks" INTEGER NOT NULL,
+    "avgPrice" REAL,
+    "priceDistribution" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "RunRound_runId_fkey" FOREIGN KEY ("runId") REFERENCES "Run" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

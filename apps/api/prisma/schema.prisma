@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Scenario {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  params    String   // was Json -> store JSON as stringified text
+  runs      Run[]
+  createdAt DateTime @default(now())
+  negotiationStrategyBuyer    String?   // NEW: store buyer strategy
+  negotiationStrategySeller   String?   // NEW: store seller strategy
+}
+
+model Run {
+  id          Int       @id @default(autoincrement())
+  scenario    Scenario  @relation(fields: [scenarioId], references: [id])
+  scenarioId  Int
+  seed        Int
+  metrics     String    // <-- changed from Json to String
+  buyers      String?    // JSON string of buyers
+  sellers     String?    // JSON string of sellers
+  createdAt   DateTime  @default(now())
+  rounds      RunRound[]
+}
+
+model RunRound {
+  id                Int    @id @default(autoincrement())
+  run               Run    @relation(fields: [runId], references: [id])
+  runId             Int
+  roundNum          Int
+  deals             Int
+  deadlocks         Int
+  avgPrice          Float?
+  priceDistribution String // <-- changed from Json to String
+  createdAt         DateTime @default(now())
+}
+
